@@ -1,69 +1,44 @@
-# DV Lab – Week 06 A
-# Name: V. Prabhas Mallik
-# Roll No: 23A91A61I9
+#Load and Understand the HairEyeColor Dataset
+#Load dataset
+data(HairEyeColor)
+#Check Structure
+str(HairEyeColor)
+view(HairEyeColor)
+?HairEyeColor
+#Very Basic Masaic plot(base R)
+mosaicplot(HairEyeColor)
+#Add titles and colors
+mosaicplot(HairEyeColor,main="Mosaic Plot: Hair,Eye Color and Sex",
+           color=TRUE)
+#Two-Variable Mosaic PLot
+HairEye2D<-margin.table(HairEyeColor,c(1,2))
+mosaicplot(HairEye2D,main="Hair vs Eye Color Mosaic Plot",
+           color=TRUE)
+#Mosaic Plots by set 
+par(mfrow=c(1,2))
+mosaicplot(HairEyeColor[,,"Male"], main="Male",color=TRUE)
+mosaicplot(HairEyeColor[,,"Female"], main="Female", color=TRUE)
+par(mfrow=c(1,1))
+#Custom Colors
+mosaicplot(HairEye2D, col=c("brown","black","red","yellow"),
+           main="Hair vs Eye Color(Custom Colors)")
+#Advance Mosaic Plot using  'vcd'
+install.packages("vcd")
+library(vcd)
+mosaic(HairEyeColor,shade=TRUE, legend=TRUE,
+       main="Shaded Mosaic Plot(vcd)")
 
+#Convert dataset to Data frame(For ggplot)
+hair_eye_df<- as.data.frame(HairEyeColor)
+head(hair_eye_df)
+#ggplot Alternative(Proportional Mosaic-Style Plot)
 library(ggplot2)
-library(hexbin)
-
-# Load and Understand Dataset
-data("diamonds")
-str(diamonds)
-dim(diamonds)
-?diamonds
-
-# ---------- Base Scatter ----------
-
-png("plots/week6A_plot-1.png")
-plot(diamonds$carat, diamonds$price,
-     col = rgb(0.2, 0.4, 0.8, 0.1),
-     pch = 16,
-     main = "Scatter Plot: Carat vs Price",
-     xlab = "Carat",
-     ylab = "Price")
-dev.off()
-
-# ---------- Hexbin using base R ----------
-
-hb <- hexbin(diamonds$carat, diamonds$price, xbins = 40)
-
-png("plots/week6A_plot-2.png")
-plot(hb, main = "Hexbin Plot: Diamond Density")
-dev.off()
-
-# ---------- ggplot Hexbin ----------
-
-p1 <- ggplot(diamonds, aes(x = carat, y = price)) +
-  geom_hex(bins = 35) +
-  scale_fill_gradient(low = "#90DBF4", high = "#1D3557") +
-  labs(title = "Hexagon Binning: Diamond Structure",
-       x = "Carat",
-       y = "Price") +
-  theme_minimal()
-
-p1
-ggsave("plots/week6A_plot-3.png", plot = p1)
-
-# ---------- Viridis Professional Palette ----------
-
-p2 <- ggplot(diamonds, aes(carat, price)) +
-  geom_hex(bins = 30) +
-  scale_fill_viridis_c(name = "Density") +
-  labs(title = "Density Structure of Diamonds",
-       x = "Carat",
-       y = "Price") +
-  theme_minimal()
-
-p2
-ggsave("plots/week6A_plot-4.png", plot = p2)
-
-# ---------- Faceted Hexbin ----------
-
-p3 <- ggplot(diamonds, aes(carat, price)) +
-  geom_hex(bins = 25) +
-  scale_fill_viridis_c() +
-  facet_wrap(~cut) +
-  labs(title = "Faceted Hexbin by Cut Quality") +
-  theme_minimal()
-
-p3
-ggsave("plots/week6A_plot-5.png", plot = p3)
+ggplot(hair_eye_df,aes(x=Hair,y=Freq,fill=Eye))+
+  geoom_bar(stat="identity",position="fill")+
+  facet_wrap(~Sex)+
+  labs(
+    title="Proportional Distribution of Eye Color by Hair",
+    y="Proportion"
+  )+theme_minimal()
+#Advanced Mosaic with Residual Shading
+mosaic(~Hair+Eye+Sex, data=hair_eye_df,shade=TRUE,legend=TRUE)
