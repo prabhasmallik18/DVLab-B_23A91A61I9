@@ -1,3 +1,6 @@
+#DV Lab – Week 07
+#Name: V. Prabhas Mallik 
+#Roll No: 23A91A61I9 
 #Load and Understand the HairEyeColor Dataset
 #Load Dataset
 data(HairEyeColor)
